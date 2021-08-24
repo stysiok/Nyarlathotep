@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import { Coin, getCoinData, MarketData } from './api';
 import { AxisOptions, Chart } from "react-charts";
+import PriceChart from './PriceChart';
 
 type AppState = {
   coin?: Coin
@@ -12,7 +13,7 @@ class App extends React.Component<{}, AppState> {
 
   constructor(props: any) {
     super(props);
-    
+
     this.state = {
       coin: undefined
     }
@@ -24,22 +25,6 @@ class App extends React.Component<{}, AppState> {
   }
 
   render() {
-    // const primaryAxis = React.useMemo(
-    //   (): AxisOptions<MarketData> => ({
-    //     getValue: datum => datum.date,
-    //   }),
-    //   []
-    // )
-
-    // const secondaryAxes = React.useMemo(
-    //   (): AxisOptions<MarketData>[] => [
-    //     {
-    //       getValue: datum => datum.price,
-    //     },
-    //   ],
-    //   []
-    // )
-
     return (
       <div className="App">
         <header className="App-header">
@@ -56,11 +41,7 @@ class App extends React.Component<{}, AppState> {
             Learn React
           </a>
         </header>
-        {/* <Chart 
-          options={{
-            
-          }}
-        /> */}
+        {this.state.coin != undefined && <PriceChart {...this.state.coin} />}
       </div>
     );
   }
