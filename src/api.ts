@@ -10,7 +10,7 @@ export type Coin = {
 }
 
 export let getCoinData = async (coin: string): Promise<Coin> => {
-    let days = (new Date().getTime() - new Date('01/01/2021').getTime()) / (1000 * 3600 * 24)
+    let days = Math.floor((new Date().getTime() - new Date('01/01/2021').getTime()) / (1000 * 3600 * 24))
     let response = await fetch(`https://api.coingecko.com/api/v3/coins/${coin}/market_chart?vs_currency=eur&days=${days}`)
     let result = await response.json()
 

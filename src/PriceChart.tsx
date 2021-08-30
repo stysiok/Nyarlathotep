@@ -5,10 +5,11 @@ import { Coin, MarketData } from "./api";
 type Series = {
     label: string
     data: MarketData[]
+    secondaryAxisId?: string
 }
 function PriceChart(props: Coin) {
-    const randomBought = [ ...props.marketData ].sort(() => 0.5 - Math.random()).splice(0, 5).map(rb => ({ label: "Bought on " + rb.date.toDateString(), data: [rb] } as Series))
-    // console.log(randomBought)
+    const randomBought = [...props.marketData].sort(() => 0.5 - Math.random()).splice(0, 20).sort((a,b) => a.date.getTime() - b.date.getTime())
+
     const data: Series[] = [
         {
             label: props.name,
@@ -16,9 +17,14 @@ function PriceChart(props: Coin) {
         },
         {
             label: "currentPrice",
-            data: props.marketData.map(md => ({ ...md, price: props.marketData[props.marketData.length - 1].price}))
+            data: props.marketData.map(md => ({ ...md, price: props.marketData[props.marketData.length - 1].price }))
         },
-        ...randomBought
+        {
+            label: "bought",
+            data: randomBought,
+            secondaryAxisId: "2",
+
+        }
     ]
     const primaryAxis = React.useMemo(
         (): AxisOptions<MarketData> => ({
@@ -32,6 +38,12 @@ function PriceChart(props: Coin) {
             {
                 getValue: md => md.price,
             },
+            {
+                id: "2",
+                getValue: md => md.price,
+                showDatumElements: true,
+                // styles: (() => { console.log((this.styles as any)); return { } })()
+            }
         ],
         []
     )
@@ -43,14 +55,20 @@ function PriceChart(props: Coin) {
                     data,
                     primaryAxis,
                     secondaryAxes,
-                    getDatumStyle: (datum, status) => 
-                        status == "none" ? ({
-                            circle: {
-                                r: 10
-                            }
-                        }) : (() => { return ({} as any) })(),
-                    getSeriesStyle: (series, status) => 
-                        series.label.indexOf("Bought") ? ({ circle: { r: 20 }}) : ({} as any)
+                    getDatumStyle: (datum, status) => datum.secondaryAxisId ? { 
+                        circle: {
+                            r: 15,
+                            // color: "yellow",
+                            stroke: "yellow"
+                        },
+                        stroke: "black",
+                        rectangle: {
+                            stroke: "green"
+                        },
+                        path: {
+                            stroke: "yellow"
+                        }  
+                    } : { }
                 }}
             />
         </>
